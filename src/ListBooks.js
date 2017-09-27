@@ -4,64 +4,40 @@ import DisplayBook from './DisplayBook'
 
 class ListBooks extends Component {
 
+  render() {
+
+    const types = [
+      { slug: 'Currently Reading', tag: 'currentlyReading' },
+      { slug: 'Want to Read', tag: 'wantToRead' },
+      { slug: 'Read', tag: 'read' }
+    ]
     
-
-    render() {
-
-        const types = ['Currently Reading', 'Want to Read', 'Read']
-        
-        return (
-            <div className="list-books-content">
-              <div>
-                  { for (var i=0; i < types.length; i++) {
-                    oliiii
-                  }}
-                <div className="bookshelf">
-                  <h2 className="bookshelf-title">Currently Reading</h2>
-                  <div className="bookshelf-books">
-                    <ol className="books-grid">
-                      <li>
-                        <DisplayBook></DisplayBook>
+    const { books, onMove } = this.props
+      
+    return (
+        <div className="list-books-content">
+          <div>
+          { types.map( (type, i) => (
+            <div className="bookshelf" key={i}>
+              <h2 className="bookshelf-title">{type.slug}</h2>
+              <div className="bookshelf-books">
+                <ol className="books-grid">
+                  {
+                    books.filter( book => book.shelf === type.tag ).map( book => (
+                      <li key={book.id}>
+                        <DisplayBook book={book} onMoving={onMove}></DisplayBook>
                       </li>
-                      <li>
-                        <DisplayBook></DisplayBook>
-                      </li>
-                    </ol>
-                  </div>
-                </div>
-                <div className="bookshelf">
-                  <h2 className="bookshelf-title">Want to Read</h2>
-                  <div className="bookshelf-books">
-                    <ol className="books-grid">
-                      <li>
-                        <DisplayBook></DisplayBook>
-                      </li>
-                      <li>
-                        <DisplayBook></DisplayBook>
-                      </li>
-                    </ol>
-                  </div>
-                </div>
-                <div className="bookshelf">
-                  <h2 className="bookshelf-title">Read</h2>
-                  <div className="bookshelf-books">
-                    <ol className="books-grid">
-                      <li>
-                        <DisplayBook></DisplayBook>
-                      </li>
-                      <li>
-                        <DisplayBook></DisplayBook>
-                      </li>
-                      <li>
-                        <DisplayBook></DisplayBook>
-                      </li>
-                    </ol>
-                  </div>
-                </div>
+                    ))       
+                  }
+                </ol>
               </div>
             </div>
-        )
-    }
+            ))
+          }
+          </div>
+        </div>
+    )
+  }
 }
 
 export default ListBooks
