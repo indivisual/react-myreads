@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 
-
 class DisplayBook extends Component {
 
     state = { value: '' };
@@ -18,7 +17,9 @@ class DisplayBook extends Component {
                
                 <div className="book-shelf-changer">
                     
-                    <select value={section} onChange={(event) => onMoving(book, event.target.value)}>
+                    <select value={section} onChange={(event) => { 
+                        onMoving(book, event.target.value)
+                        }}>
                         
                         <option value="none" disabled>Move to...</option>
                         <option value="currentlyReading">Currently Reading</option>

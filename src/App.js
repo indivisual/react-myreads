@@ -4,14 +4,13 @@ import './App.css'
 import { Route, Link } from 'react-router-dom'
 import ListBooks from './ListBooks'
 import DisplayBook from './DisplayBook'
-import escapeRegExp from 'escape-string-regexp'
 
 class BooksApp extends React.Component {
 
   constructor(props) {
-    super(props);
-    this.refresher = this.refresher.bind(this);
-    this.updateShelf = this.updateShelf.bind(this);
+    super(props)
+    this.refresh = this.refresh.bind(this)
+    this.updateShelf = this.updateShelf.bind(this)
   }
   state = {
     showSearchPage: false,
@@ -19,32 +18,33 @@ class BooksApp extends React.Component {
     query: ''
   }
 
-  refresher() {
+  refresh() {
     BooksAPI.getAll().then((books) => {
       this.setState({ books })
-    });
+    })
   }
 
   componentDidMount() {
-    this.refresher()
+    this.refresh()
   }
 
-  updateShelf( book, newShelf ) {  
-    BooksAPI.update(book, newShelf).then(this.refresher);
+  updateShelf( book, newShelf ) {
+   if (book.shelf !== newShelf) { 
+      BooksAPI.update(book, newShelf).then(() => {
+        book.shelf = newShelf
+        this.refresh()
+        this.setState(state => ({
+          books: state.books.filter(b => b.id !== book.id).concat([book])
+        }))
+      })
+    }
   }
 
-  searchBooks(query,limit) {
-    BooksAPI.search(query, limit).then((data) => {
-      this.setState( { query: query.trim(), books: data } )
-    });
-  }
-
-  updateQuery = (query) => {
-    this.setState( { query: query.trim() } )
-  }
-
-  clearQueue = () => {
-    this.setState( { query: '' } )
+  searchBooks(query) {
+    this.setState( { query: query } )
+    BooksAPI.search(query).then((data) => {
+      this.setState( { books: data } )
+    })
   }
 
   render() {
@@ -65,7 +65,6 @@ class BooksApp extends React.Component {
                   value={query}
                   onChange={(event) => {
                     this.searchBooks(event.target.value)
-                    this.setState( { query: '' } )
                     }}
                   />
               </div>
